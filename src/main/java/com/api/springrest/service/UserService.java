@@ -16,6 +16,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository repository;
+    private final PhoneService phoneService;
 
 
     public Optional<User> findById(Long id) {
@@ -49,6 +50,7 @@ public class UserService {
         return findById(dto.getId()).map(entity -> {
             User user = dto.convert(dto);
             user.setId(entity.getId());
+            user.setPhones(phoneService.findPhonesByUser(user));
             return repository.save(user);
         }).orElseThrow(() -> new BadRequestException("User not found."));
     }
